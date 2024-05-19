@@ -17,7 +17,7 @@ steps:
     '--region', 'asia-south2', 
     '--platform', 'managed', 
     '--allow-unauthenticated',
-    '--set-secrets', 'USER_NAME=USER_NAME:latest'
+    '--update-secrets', 'USER_NAME=USER_NAME:latest'
   ]
   id: Deploy-to-Cloud-Run
 
