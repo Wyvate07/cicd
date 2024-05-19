@@ -1,16 +1,27 @@
 steps:
-  # Build the container image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', '[$PROJECT_ID]-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}', '.']
-    id: Building the container image
+# Build the container image
+- name: gcr.io/cloud-builders/docker
+  args: ['build', '-t', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}', '.']
+  id: Build-the-container-image
 
-  # Push the container image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', '[$PROJECT_ID]-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}']
-    id: Pushing the image to Artifact Registry
+# Push the container image to Artifact Registry
+- name: gcr.io/cloud-builders/docker
+  args: ['push', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}']
+  id: Push-the-image-to-registry
 
-  # Deploy container image to Cloud Run
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['run', 'deploy', '${_SERVICE_NAME}', '--image', '$PROJECT_ID-docker.pkg.dev/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}', '--region', 'asia-south2', '--platform', 'managed', "--allow-unauthenticated"]
+# Deploy container image to Cloud Run
+- name: gcr.io/cloud-builders/gcloud
+  args: [
+    'run', 'deploy', '${_SERVICE_NAME}', 
+    '--image', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}', 
+    '--region', 'asia-south2', 
+    '--platform', 'managed', 
+    '--allow-unauthenticated'
+  ]
+  id: Deploy-to-Cloud-Run
+
 options:
   logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _REPOSITORY_NAME: 'cicd-test-repo'  # Substitute this with your Artifact Registry repository name
