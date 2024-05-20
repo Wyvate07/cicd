@@ -15,8 +15,7 @@ steps:
     '--region', 'asia-south2', 
     '--platform', 'managed', 
     '--allow-unauthenticated',
-    '--update-secrets', 'USER_NAME=USER_NAME:latest',
-    '--update-secrets', 'PROD_PYTHON_BACKEND_CLIENT_EMAIL=PROD_PYTHON_BACKEND_CLIENT_EMAIL:latest'
+    '--update-secrets', 'USER_NAME=USER_NAME:latest'
   ]
   id: Deploy-to-Cloud-Run
 
