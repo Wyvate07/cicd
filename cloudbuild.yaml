@@ -10,16 +10,23 @@ steps:
   id: Push-the-image-to-registry
 
 # Deploy container image to Cloud Run
-- name: gcr.io/cloud-builders/gcloud
-  args: [
-    'run', 'deploy', '${_SERVICE_NAME}', 
-    '--image', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}', 
-    '--region', 'asia-south2', 
-    '--platform', 'managed', 
-    '--allow-unauthenticated',
-    '--update-secrets', 'USER_NAME=USER_NAME:latest'
-  ]
-  id: Deploy-to-Cloud-Run
+- name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'run', 'deploy', '${_SERVICE_NAME}',
+      '--image', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}',
+      '--region', 'asia-south2',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--set-secrets', '/secrets/env-secrets:latest'
+    ]
+    env:
+      - name: GOOGLE_CLOUD_PROJECT
+        value: $PROJECT_ID
+    volumes:
+      - name: secret-volume
+        secret:
+          secretName: env-secrets
+
 
 options:
   logging: CLOUD_LOGGING_ONLY
