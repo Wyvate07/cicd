@@ -15,7 +15,8 @@ steps:
       '--region', 'asia-south2', 
       '--platform', 'managed', 
       '--allow-unauthenticated',
-      '--update-secrets', 'USER_NAME=USER_NAME:latest'
+      '--update-secrets', 'USER_NAME=USER_NAME:latest',
+      '--update-secrets', 'PROD_PYTHON_BACKEND_CASHFREE_PUBLIC_KEY=PROD_PYTHON_BACKEND_CASHFREE_PUBLIC_KEY:latest'
     ]
     id: Deploy-to-Cloud-Run
 
