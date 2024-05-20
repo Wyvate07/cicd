@@ -1,14 +1,12 @@
 steps:
-  # Build the container image
+# Build the container image
   - name: gcr.io/cloud-builders/docker
     args: ['build', '-t', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}', '.']
     id: Build-the-container-image
-
   # Push the container image to Artifact Registry
   - name: gcr.io/cloud-builders/docker
     args: ['push', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}']
     id: Push-the-image-to-registry
-
   # Deploy container image to Cloud Run
   - name: gcr.io/cloud-builders/gcloud
     args: [
@@ -17,7 +15,7 @@ steps:
       '--region', 'asia-south2', 
       '--platform', 'managed', 
       '--allow-unauthenticated',
-      '--update-secrets', 'USER_NAME=USER_NAME:latest'
+      '--update-env-vars', 'USER_NAME=projects/$PROJECT_ID/secrets/USER_NAME/versions/latest'
     ]
     id: Deploy-to-Cloud-Run
 
