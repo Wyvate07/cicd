@@ -1,35 +1,28 @@
 steps:
-# Build the container image
-- name: gcr.io/cloud-builders/docker
-  args: ['build', '-t', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}', '.']
-  id: Build-the-container-image
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}', '.']
+    id: 'Build-the-container-image'
 
-# Push the container image to Artifact Registry
-- name: gcr.io/cloud-builders/docker
-  args: ['push', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}']
-  id: Push-the-image-to-registry
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}']
+    id: 'Push-the-image-to-registry'
 
-# Deploy container image to Cloud Run
-- name: gcr.io/cloud-builders/gcloud
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
     args: [
       'run', 'deploy', '${_SERVICE_NAME}',
       '--image', 'asia-south2-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_SERVICE_NAME}:${SHORT_SHA}',
       '--region', 'asia-south2',
       '--platform', 'managed',
       '--allow-unauthenticated',
-      '--set-secrets', '/secrets/env-secrets:latest'
+      '--set-secrets', 'env-secrets:latest:/secrets/env-secrets'
     ]
-    env:
-      - name: GOOGLE_CLOUD_PROJECT
-        value: $PROJECT_ID
-    volumes:
-      - name: secret-volume
-        secret:
-          secretName: env-secrets
-
 
 options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  _REPOSITORY_NAME: 'cicd-test-repo' 
+  _REPOSITORY_NAME: 'cicd-test-repo'
+  _SERVICE_NAME: 'your-service-name'  # Replace with your actual service name
